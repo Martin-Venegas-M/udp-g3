@@ -1,0 +1,259 @@
+---
+title: |
+  ![](logo.jpg){width=25% height=25%}  
+  Guía Análisis Cuantitativo - Grupo 3
+author: 
+  - Martin Venegas
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output:
+    bookdown::html_document2:
+          number_sections: false
+          theme: yeti
+    
+linkcolor: black
+urlcolor: blue
+link-citations: yes
+---
+
+<style type="text/css">
+
+h1 {
+  font-size: 38px;
+  text-align: center;
+}
+h4.author { /* Header 4 - and the author and data headers use this too  */
+    font-size: 18px;
+  text-align: center;
+}
+h4.date { /* Header 4 - and the author and data headers use this too  */
+  font-size: 18px;
+  text-align: center;
+}
+</style>
+
+
+\newpage
+
+\setcounter{tocdepth}{2}
+\renewcommand{\contentsname}{Tabla de contenidos}
+\tableofcontents
+
+\newpage
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(comment=NA, prompt=FALSE, cache=FALSE, echo=FALSE, results='asis', message = F, warning = F)
+summarytools::st_options(bootstrap.css     = FALSE,
+           plain.ascii       = FALSE,   
+           style             = "rmarkdown",
+           dfSummary.silent  = TRUE, 
+           footnote          = NA,
+           subtitle.emphasis = FALSE,
+           headings =  F,
+           lang =  "es")
+summarytools::st_css()
+
+```
+
+```{r echo=FALSE}
+# Cargar base
+pacman::p_load(haven,
+               sjmisc,
+               sjPlot)
+
+# Cargar base
+df_g3 <- read_sav("BBDD Preferencias musicales de jovenes.sav")
+```
+
+
+Un análisis de datos tiene dos principales características. La primera es que está guiado por la pregunta y los objetivos de investigación planteados en el diseño del estudio. Es decir, los datos que analizemos tienen el objetivo de responder a la pregunta de investigación que hayamos planteado en nuestro trabajo. Además, en el caso de estudios que planteen hipótesis, el análisis debe poner a prueba las hipótesis y ser claro si es que estas se aceptan o rechazan. La segunda característica es que los resultados obtenidos, guiados por el diseño de investigación, deben servir de insumo para armar una discusión con la literatura. Un buen análisis es aquel que permite hacer una buena discusión.
+
+Teniendo en consideración lo anterior, esta guía presenta un paso a paso respecto a cómo cumplir con ambas características. La guía se separará en tres preguntas que es necesario responder para avanzar hacia un buen análisis:
+
+- ¿Qué necesito para hacer un análisis de datos cuantitativo?
+- ¿Cómo hago un análisis de datos cuantitativo?
+- ¿Qué hago con los resultados de mi análisis?
+
+# ¿Qué necesito para hacer un análisis de datos cuantitativo?
+
+Para realizar un análisis de datos cuantitativos se requieren dos cosas. Primero, un diseño de investigación que permita orientar un análisis de datos cuantitativos. Segundo, una base de datos que corresponda a la población de estudio que permita hacer los análisis. Veamos cada elemento en detalle:
+
+## Diseño de investigación
+
+Para guiar un análisis de datos, un diseño de investigación debe tener claro los siguientes elementos:
+
+- La pregunta de investigación
+- Los objetivos de investigación
+- Las hipótesis de investigación
+- La población de estudio
+- Las variables que se analizarán
+- Las técnicas que se utilizarán para hacer el análisis
+
+## Base de datos
+
+Para análizar los datos, debemos contar con una base que:
+
+- Sea de la población de estudio planteada en el diseño de investigación
+- Tenga un tamaño de muestra suficiente para efectuar las técnicas de análisis que hemos planteado
+- Contenga las variables que nos interesa análizar
+
+## Ejercicio: Caso grupo 3
+
+En el caso del Grupo 3, hagamos un repaso de los elementos necesarios:
+
+### Diseño de investigación
+
+- **La pregunta de investigación:** ¿Cómo se relaciona el género y la clase social con el tipo de música que escuchan lxs jóvenes de 18 a 25 años de Santiago? 
+
+- **Los objetivos de investigación:**
+
+  + **General:** Analizar si el gusto musical se ve influido por la clase social y el  género en lxs jóvenes entre 18 y 25 años de Santiago. 
+  
+  + **Especificos:** 
+  
+1. Caracterizar la música que se escucha de acuerdo a los ambientes en los que se encuentran lxs jóvenes, identificando posibles diferencias entre el gusto musical en ambientes sociales versus lo privado.  
+
+2. Distinguir la relación existente entre el gusto musical y el género de lxs jóvenes. 
+
+3. Determinar si los gustos musicales dependen de la clase social. 
+
+- **Las hipótesis de investigación:**
+
+  + **General:** Existe una correlación entre las variables gusto musical de lxs jóvenes, con su clase social subjetiva y su género
+  
+  + **Especificas:**
+  
+En ambientes públicos, no existe una relación entre el genero y la clase social en el gusto musical. Es decir, independiente del genero o la clase social de las personas, se elegirían músicas populares.
+
+En ambientes privados, existe una relación entre el genero y la clase social en el gusto musical. Es decir, el genero y la clase social influyen en la elección.
+
+- **La población de estudio:** Jóvenes entre 18 y 25 años de Santiago. 
+- **Las variables que se analizarán**
+
+  + **Independientes:** Clase social subjetiva y genero
+  + **Dependiente:** Gusto musical
+  
+- **Las técnicas que se utilizarán para hacer el análisis:** Chi Cuadrado
+
+### Base de datos
+
+Aquí tenemos que preguntarnos si nuestra base de datos cumple con...
+
+- ¿Ser parte de la población de estudio? -> Sí, en este caso se cumple
+- ¿Tiene el tamaño de muestra suficiente? -> Sí, tiene 99 casos
+- ¿Tiene las variables necesarias? -> Sí, tiene clase social subjetiva, genero y múltiples variables de gusto musical en ámbitos privados y públicos.
+
+Entonces vamos a analizar.
+
+# ¿Cómo hago un análisis de datos cuantitativo?
+
+Generalmente, un análisis de datos cuantitativo comienza con análisis descriptivos básicos para las variables de interés y luego termina con los análisis que se vayan a utilizar para poner a prueba las hipótesis. 
+
+En lo que respecta al análisis descriptivo, se suelen mostrar los univariados por cada variable de interés (frecuencias si son variables categóricas y medidas de tendencia central y/o dispersión si son cuantitativas) y luego bivariados según corresponda. 
+
+En lo que respecta al análisis para poner a prueba las hipótesis, estos suelen referir a pruebas de hipótesis como T, ANOVA, Chi Cuadrado o a análisis multivariados como Regresiones Lineales, Regresiones Logísticas, entre otras.
+
+## Ejercicio: Caso Grupo 3
+
+En el caso del grupo 3, tenemos claras nuestras variables independientes. Estas serían genero y clase social subjetiva. Para cada una de estas podríamos presentar una tabla de frecuencias. Por ejemplo:
+
+### Tabla 1. Frecuencias Genero
+
+```{r}
+frq(df_g3$Genero, out = "browser")
+```
+
+
+### Tabla 2. Frecuencias Clase social subjetiva
+
+
+```{r}
+frq(df_g3$Clase, out = "browser")
+```
+
+Ahora, tendríamos que presentar los descriptivos univariados de la variable dependiente que es gusto musical. No obstante, hasta este punto en el trabajo no ha quedado claro cuáles se utilizarán. Por lo que, a fin de efectuar los análisis, tenemos que tomar una decisión respecto a qué variables utilizar como dependientes. Para esta decisión tenemos que considerar nuestro diseño de investigación, específicamente:
+
+- Las variables dependientes deben representar el concepto (gusto musical)
+- Las variables deben permitir poner a prueba la hipótesis.
+
+Por lo visto, hay varias variables que cumplen el primer criterio, sin embargo, no tantas que cumplen el segundo. Este segundo criterio es importante porque en su hipótesis plantean que el efecto de las variables independientes en la dependiente varía de acuerdo al ámbito. **En particular, plantean que en ámbitos sociales se tendería a escuchar música popular independiente de la clase y el genero. Por ende, deberíamos escoger una variable de gusto para el ámbito privado y otro para el social que permitan hacer esta comparación**. Las más acordes parecen ser: *GM_AP_escfic_1_1* y *GM_ES_1_1*. Estas variables representan la _elección de género musical en ámbitos privados_ y la _elección de género musical en ámbitos públicos_, respectivamente.
+
+**NOTA:** Considerando que tienen dos opciones para cada una, recomendaría que se quedaran con la primera y si es que tiene NA, imputarle los valores de la segunda. Por ejemplo, si hay NA en *GM_ES_1_1*, imputarle el valor de *GM_ES_1_2*.
+
+Habiendo escogido sus variables, vemos el univariado de cada una.
+
+### Tabla 3. Gustos ámbito privado
+
+```{r}
+frq(df_g3$GM_AP_escfic1_1, out = "browser")
+```
+
+
+### Tabla 4. Gustos ámbito público
+
+```{r}
+frq(df_g3$GM_ES_1_1, out = "browser")
+```
+
+Considerando que su primer objetivo especifico habla de *caracterizar* los gustos musicales por ámbito, con las frecuencias de la Tabla 3 y Tabla 4 ya podrían hacer un análisis que permita cumplir este objetivo. Los objetivos específicos 2 y 3 hablan sobre el efecto de las variables independientes en los gustos. Se podría avanzar a analizar descriptivamente esta relación con **tablas de contingencia** y luego hacer la técnica que permita probar sus hipótesis, en su caso, **Chi Cuadrado**.
+
+Veamos algunas tablas de contingencia de ejemplo:
+
+### Tabla 4. Genero por gustos ámbito privado
+
+```{r}
+sjt.xtab(df_g3$Genero, df_g3$GM_AP_escfic1_1, encoding = "Windows-1252", show.summary = F, show.row.prc = T)
+```
+
+### Tabla 5. Genero por gustos ambito público
+
+[Repetir ejercicio]
+
+### Tabla 6. Clase social subjetiva por gustos ámbito privado
+
+```{r}
+sjt.xtab(df_g3$Clase, df_g3$GM_AP_escfic1_1, encoding = "Windows-1252", show.summary = F, show.row.prc = T)
+```
+
+### Tabla 7. Clase social subjetiva por gustos ámbito público
+
+[Repetir ejercicio]
+
+Ahora viene la parte más importante de su análisis: **poner a prueba su hipótesis**. Recordemos sus hipótesis:
+
+
+> En ambientes públicos, no existe una relación entre el genero y la clase social en el gusto musical. Es decir, independiente del genero o la clase social de las personas, se elegirían músicas populares.
+
+> En ambientes privados, existe una relación entre el genero y la clase social en el gusto musical. Es decir, el genero y la clase social influyen en la elección.
+
+Considerando lo que plantean, se podrían esquematizar sus hipótesis de la siguiente manera
+
+- H1a: No existe una relación entre el género del entrevistado y su elección de genero musical en ámbitos públicos
+- H1b: No existe una relación entre la clase social subjetiva del entrevistado y su elección de genero musical en ámbitos públicos
+
+- H2a: Existe una relación entre el género del etrevistado y su elección de genero musical en ámbitos privados.
+- H2b: Existe una relación entre el género del entrevistado y su elección de género musical en ámbitos privados.
+
+**NOTA:** En la primera hipótesis que plantean ustedes, no solo se plantea que existe una relación entre género y clase social subjetiva con la elección de géneros musicales en ámbitos públicos, sino que avanzan a proponer una hipótesis más especifica. Esta hipótesis más especifica se evidencia en esta frase: _"Independiente del genero o la clase social de las personas, se elegirían músicas populares"_. Si quisieran poner a prueba esta hipótesis más específica, se podría re-codificar su variable _GM_AP_escfic1_1_ (elección de género en el ámbito público), donde 1 = Urbano y Popular y 0 = Los demás géneros y a partir de eso hacer el Chi Cuadrado. No profundizaré en ello, pero se los dejo mencionado como insumo.
+
+Para poner a prueba estas hipótesis, ustedes propusieron utilizar **Chi Cuadrado**. Como se les señaló en la retroalimentación, esto es una opción correcta ya que las variables independientes y dependientes son categoricas. No profundizaré en la técnica ya que el material está en Canvas, pero si les dejo un punteo de los puntos que deben considerar para aplicar la técnica:
+
+- Determinar que se cumplen las condiciones para hacer un Chi Cuadrado
+- Hacer una prueba de Chi Cuadrado para cada hipótesis
+- Hacer una prueba post-hoc (fuerza de asociación) para cada hipótesis planteada
+
+# ¿Qué hago con los resultados de mi análisis?
+
+Al terminar sus análisis, deben asegurarse de haber cumplido con los siguientes puntos.
+
+- Haber realizado los análisis con las variables y las técnicas reportadas en la sección de método.
+- Que sus análisis hayan sido orientados por sus objetivos
+- Que sus análisis permita rechazar o aceptar sus hipótesis
+- Que sus análisis permita responder a la pregunta de investigación
+
+Si es que sus análisis cumple con estas características ¡felicitaciones! Lo que queda entonces es reflexionar en torno a sus resultados. Para facilitar el proceso de reflexión, les dejo un punteo de los elementos que se suelen incluir en una discusión:
+
+- ¿En qué aportan sus hallazgos a la agenda de investigación en la que se enmarca el estudio? o dicho de otra forma ¿en qué aporta al conocimiento sociológico los hallazgos que han generado?
+
+- Reflexionar si es que sus hallasgos tienen alguna utilidad para alguna discusión en la agenda pública o el desarrollo de políticas públicas
+
+- Proponer lineas de investigación o futuros trabajos sobre su objeto de estudio a partir de los hallazgos que han generado.
